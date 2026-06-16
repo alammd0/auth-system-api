@@ -261,6 +261,8 @@ export const changePassword = async (req, res) => {
 
         const validationData = changePasswordSchema.safeParse(req.body);
 
+        const { id } = req.user; 
+
         if(validationData.success){
 
             const { oldPassword, password, confirmPassword } = validationData.data;
@@ -279,7 +281,7 @@ export const changePassword = async (req, res) => {
                 })
             }
 
-            const user = await Auth.findOne({ email });
+            const user = await Auth.findOne({ _id: id });
 
             if(!user){
                 return res.status(400).json({
@@ -326,6 +328,20 @@ export const changePassword = async (req, res) => {
 // 7. User Profile or Get ME : TODO
 export const getMe = async (req, res) => {
     try {
+        const { id } = req.user;
+
+        const user = await Auth.findOne({ _id: id }).select("-password");
+
+        if(!user){
+            return res.status(400).json({
+                message : "User not found"
+            })
+        }
+
+        return res.status(200).json({
+            message : "User Profile",
+            data : user
+        })
 
     }
     catch (error) {
@@ -336,10 +352,11 @@ export const getMe = async (req, res) => {
     }
 }
 
-// 8. Profile Update : TODO
+// 8. Profile Update : TODO - H/w
 export const updateProfile = async (req, res) => {
     try {
 
+    
     }
     catch (error) {
         return res.status(500).json({
