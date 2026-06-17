@@ -2,6 +2,7 @@ import Auth from "../models/auth.model.js";
 import { loginUserSchema, registerUserSchema } from "../validators/auth.validator.js"
 import bcrypt from "bcrypt";
 import sendEmailMessage from "../utils/sendEmail.js";
+import { uploadImage } from "../utils/uploadImage.js";
 
 
 // 1. User Registration
@@ -352,11 +353,45 @@ export const getMe = async (req, res) => {
     }
 }
 
-// 8. Profile Update : TODO - H/w
+// 8. Profile Update
 export const updateProfile = async (req, res) => {
     try {
+        const { id } = req.user;
 
-    
+        const user = await Auth.findById(id);
+
+        if(!user){
+            return res.status(404).json({
+                message : "User not found"
+            })
+        }
+
+        const { bio, phone, location } = req.body;
+
+        const { image } = req.files;
+
+        if(bio !== undefined){
+            user.bio = bio;
+        }
+
+        if(phone !== undefined){
+            user.phone = phone;
+        }
+
+        if(location !== undefined){
+            user.location = location;
+        }
+
+        if(image !== undefined){
+            const imageUrl = await uploadImage(image);
+            user.image = imageUrl.url;
+        }
+
+        await user.save();
+
+        return res.status(200).json({
+            message : "Profile Updated Successfully"
+        })
     }
     catch (error) {
         return res.status(500).json({

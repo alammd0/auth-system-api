@@ -1,6 +1,24 @@
 import mongoose from 'mongoose';
 
 
+const profileSchema = new mongoose.Schema({
+    bio : {
+        type : String
+    },
+
+    image : {
+        type : String
+    },
+
+    phone : {
+
+    },
+
+    location : {
+        type : String
+    }
+})
+
 const authSchema = new mongoose.Schema({
     name : {
         type : String,
@@ -29,6 +47,8 @@ const authSchema = new mongoose.Schema({
         required : [true, 'Role is required'],
         enum : ['User', 'Admin']
     },
+
+    profile : profileSchema,
 
     otp : {
         type : String
