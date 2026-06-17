@@ -1,11 +1,12 @@
 import Auth from "../models/auth.model.js";
-import { loginUserSchema, registerUserSchema } from "../validators/auth.validator.js"
+import { forgotPasswordSchema, loginUserSchema, registerUserSchema, resetPasswordSchema } from "../validators/auth.validator.js"
 import bcrypt from "bcrypt";
 import sendEmailMessage from "../utils/sendEmail.js";
 import { uploadImage } from "../utils/uploadImage.js";
+import jwt from "jsonwebtoken";
 
 
-// 1. User Registration
+// 1. User Registration - Done
 export const registerUser = async (req, res) => {
     try {
 
@@ -44,7 +45,12 @@ export const registerUser = async (req, res) => {
 
             return res.status(201).json({
                 message : "User Registered",
-                data : newUser
+                data : {
+                    id : newUser._id,
+                    name : newUser.name,
+                    email : newUser.email,
+                    role : newUser.role
+                }
             })
         } else{
             return res.status(400).json({
@@ -62,7 +68,7 @@ export const registerUser = async (req, res) => {
     }
 }
 
-// 2. Login with JWT
+// 2. Login with JWT - Done
 export const loginUser = async (req, res) => {
     try {
         const validationData = loginUserSchema.safeParse(req.body);
@@ -89,6 +95,8 @@ export const loginUser = async (req, res) => {
                 })
             }
 
+            console.log(user);
+
             // Payload for JWT
             const payload = {
                 id : user._id,
@@ -100,6 +108,8 @@ export const loginUser = async (req, res) => {
             const token = jwt.sign(payload, process.env.JWT_SECRET, {
                 expiresIn : process.env.JWT_EXPIRES_IN
             });
+
+            console.log(token);
 
             res.cookie('token', token, {
                 httpOnly : true,
@@ -125,7 +135,7 @@ export const loginUser = async (req, res) => {
     }
 }
 
-// 3. Logout
+// 3. Logout - Done
 export const logoutUser = async (req, res) => {
     try {
         res.clearCookie('token');
@@ -142,7 +152,7 @@ export const logoutUser = async (req, res) => {
     }
 }
 
-// 4. Forgot Password
+// 4. Forgot Password - Done
 export const forgotPassword = async (req, res) => {
     try {
 
@@ -153,6 +163,8 @@ export const forgotPassword = async (req, res) => {
             const { email } = validationData.data;
 
             const user = await Auth.findOne({ email });
+
+            // console.log(user);
 
             if (!user) {
                 return res.status(400).json({
@@ -172,12 +184,17 @@ export const forgotPassword = async (req, res) => {
                 expiresIn : process.env.JWT_EXPIRES_IN
             });
 
-            const link = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+            // console.log(token);
+
+            const link = `${process.env.CLIENT_URL}/api/auth/reset-password/${token}`;
+            // console.log(link);
 
             const message = `Click on the link to reset your password`;
 
             // send email 
             await sendEmailMessage(email, 'Reset Password', message, link);
+
+            // console.log(result);
 
             return res.status(200).json({
                 message : "Password Reset Link Send Successful"
@@ -199,9 +216,26 @@ export const forgotPassword = async (req, res) => {
     }
 }
 
-// 5. Reset Password
+// 5. Reset Password - Done
 export const resetPassword = async (req, res) => {
     try {
+
+        const { token } = req.params;
+
+        // verify token
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        if(!decoded){
+            return res.status(400).json({
+                message : "Token is invalid"
+            })
+        }
+
+        console.log(decoded);
+
+        const { email } = decoded;
+
         const validationData = resetPasswordSchema.safeParse(req.body);
 
         if(validationData.success){
@@ -256,7 +290,7 @@ export const resetPassword = async (req, res) => {
     }
 }
 
-// 6. Change Password : TODO
+// 6. Change Password - H/W
 export const changePassword = async (req, res) => {
     try {
 
@@ -326,7 +360,7 @@ export const changePassword = async (req, res) => {
     }
 }
 
-// 7. User Profile or Get ME : TODO
+// 7. User Profile or Get ME - Done
 export const getMe = async (req, res) => {
     try {
         const { id } = req.user;
@@ -353,7 +387,7 @@ export const getMe = async (req, res) => {
     }
 }
 
-// 8. Profile Update
+// 8. Profile Update - H/W
 export const updateProfile = async (req, res) => {
     try {
         const { id } = req.user;
