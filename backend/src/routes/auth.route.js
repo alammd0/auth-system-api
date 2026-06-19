@@ -18,7 +18,7 @@ authRoutes.post('/register', registerUser);
 authRoutes.post('/login', loginUser);
 authRoutes.post('/logout', logoutUser);
 authRoutes.post('/forgot-password', forgotPassword);
-authRoutes.put('/reset-password', resetPassword);
+authRoutes.put('/reset-password/:token', resetPassword);
 authRoutes.put('/change-password', authMiddleware ,changePassword);    
 authRoutes.get('/me', authMiddleware, getMe);
 authRoutes.put('/profile', authMiddleware, updateProfile);
