@@ -1,15 +1,27 @@
 import { useContext } from "react"
 import { AuthContext } from "../auth.context"
 import { changePassword, forgotPassword, loginUser, logoutUser, registerUser, resetPassword } from "../services/auth.api";
+import { useNavigate } from "react-router";
 
 
 export const useAuth = () => {
     const { isLoading, user, setIsLoading, setUser } = useContext(AuthContext);
 
+
+    const navigate = useNavigate();
+
     const registerFnd = async ({ name, email, password, role }) => {
         try {
             setIsLoading(true);
+
+            console.log(name, email, password, role);
+
             const response = await registerUser({ name, email, password, role });
+
+            if(response.status === 201){
+                navigate("/login");
+            }
+
             setIsLoading(false);
             setUser(response.data);
         } catch (error) {
@@ -21,6 +33,11 @@ export const useAuth = () => {
         try {
             setIsLoading(true);
             const response = await loginUser({ email, password });
+
+            if(response.status === 200){
+                navigate("/profile");
+            }
+
             setIsLoading(false);
             setUser(response.data);
         } catch (error) {

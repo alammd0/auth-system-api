@@ -1,11 +1,9 @@
+import { isRouteErrorResponse } from "react-router";
 import { backendUrl } from "./backendUrl";
 import axios from "axios";
 
 const instance = axios.create({
     baseURL: backendUrl,
-    headers : {
-        'Content-Type' : 'application/json'
-    },
     withCredentials: true
 });
 
@@ -18,12 +16,14 @@ export const registerUser = async ({ name, email, password, role}) => {
             role
         });
 
-        console.log(response);
-
-        return response.data;
+        return response;
     }
     catch (error) {
-        console.log(error);
+        console.log(error.response);
+        console.log(error.response?.data);
+        console.log(error.message);
+
+        return error.response?.data;
     }
 }
 
@@ -34,9 +34,7 @@ export const loginUser = async ({ email, password }) => {
             password
         });
 
-        console.log(response);
-
-        return response.data;
+        return response;
     }
     catch (error) {
         console.log(error);

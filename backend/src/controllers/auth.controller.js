@@ -55,7 +55,7 @@ export const registerUser = async (req, res) => {
         } else{
             return res.status(400).json({
                 message : "Validation Error",
-                error : validationUser.error
+                error : validationData.error
             })
         }
 
@@ -123,7 +123,7 @@ export const loginUser = async (req, res) => {
         } else{
             return res.status(400).json({
                 message : "Validation Error",
-                error : validationUser.error
+                error : validationData.error
             })
         }
     }
@@ -203,7 +203,7 @@ export const forgotPassword = async (req, res) => {
         } else{
             return res.status(400).json({
                 message : "Validation Error",
-                error : validationUser.error
+                error : validationData.error
             })
         }
 
@@ -278,7 +278,7 @@ export const resetPassword = async (req, res) => {
         } else{
             return res.status(400).json({
                 message : "Validation Error",
-                error : validationUser.error
+                error : validationData.error
             })
         }
     }
