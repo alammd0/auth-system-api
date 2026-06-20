@@ -1,10 +1,13 @@
+import routes from "./app.routes";
+import { RouterProvider } from "react-router";
+import { AuthProvider } from "./features/auth.context";
 
 function App() {
   
   return (
-    <div className=" bg-red-900 text-zinc-800">
-      Hello World!
-    </div>
+    <AuthProvider>
+      <RouterProvider router={routes} />
+    </AuthProvider>
   )
 }
 
