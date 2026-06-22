@@ -61,9 +61,7 @@ export const forgotPassword = async ({ email }) => {
             email
         });
 
-        console.log(response);
-
-        return response.data;
+        return response;
     }
     catch (error) {
         console.log(error);
@@ -79,9 +77,11 @@ export const resetPassword = async ({ token, password, confirmPassword }) => {
             confirmPassword
         })
 
-        console.log(response);
+        if(!response){
+            return;
+        }
 
-        return response.data;
+        return response;
         
     }catch (error) {
         console.log(error);
