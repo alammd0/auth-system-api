@@ -2,6 +2,7 @@ import { useContext } from "react"
 import { AuthContext } from "../auth.context"
 import { changePassword, forgotPassword, loginUser, logoutUser, registerUser, resetPassword } from "../services/auth.api";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 
 export const useAuth = () => {
@@ -34,6 +35,12 @@ export const useAuth = () => {
             setIsLoading(true);
             const response = await loginUser({ email, password });
 
+            if(!response){
+                toast.error("Invalid Credentials");
+                setIsLoading(false);
+                return;
+            }
+
             if(response.status === 200){
                 navigate("/profile");
             }
@@ -42,6 +49,7 @@ export const useAuth = () => {
             setUser(response.data);
         } catch (error) {
             console.log(error);
+            toast.error(error.message);
         }
     }
 
@@ -60,10 +68,17 @@ export const useAuth = () => {
         try {
             setIsLoading(true);
             const response = await forgotPassword({ email });
+
+            if(response.status === 200){
+                toast.success("Password Reset Link Sent Successfully");
+            }
+
             setIsLoading(false);
-            setUser(response.data);
+
         } catch (error) {
             console.log(error);
+            toast.error(error.message);
+            toast.error("Something went wrong");
         }
     }
 
@@ -71,8 +86,13 @@ export const useAuth = () => {
         try {
             setIsLoading(true);
             const response = await resetPassword({ token, password, confirmPassword });
+
+            if(response.status === 200){
+                toast.success("Password Reset Successfully");
+                navigate("/login");
+            }
+
             setIsLoading(false);
-            setUser(response.data);
         } catch (error) {
             console.log(error);
         }

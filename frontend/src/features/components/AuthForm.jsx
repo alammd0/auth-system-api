@@ -40,6 +40,10 @@ export default function AuthForm({ type }) {
         }
     }
 
+    if(isLoading){
+        return <div>Loading...</div>
+    }
+
 
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center px-2">
@@ -115,9 +119,15 @@ export default function AuthForm({ type }) {
                             </div>
                     }
 
+                    <div className = "text-end mt-2 text-sm underline">
+                        <Link to="/forgot-password" className="text-blue-400 mt-2 hover:text-blue-600">
+                            Forgot Password?
+                        </Link> 
+                    </div>
+
                     <button
                         type="submit"
-                        className="w-full bg-green-600 hover:bg-green-700 transition p-3 rounded-lg text-white font-semibold mt-2"
+                        className="w-full bg-green-600 hover:bg-green-700 transition p-3 rounded-lg text-white font-semibold mt-2 hover:cursor-pointer"
                     >
                         {
                             type === "register" ? "Create Account" : "Login"

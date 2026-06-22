@@ -186,7 +186,7 @@ export const forgotPassword = async (req, res) => {
 
             // console.log(token);
 
-            const link = `${process.env.CLIENT_URL}/api/auth/reset-password/${token}`;
+            const link = `${process.env.CLIENT_URL}/reset-password/${token}`;
             // console.log(link);
 
             const message = `Click on the link to reset your password`;
@@ -238,9 +238,13 @@ export const resetPassword = async (req, res) => {
 
         const validationData = resetPasswordSchema.safeParse(req.body);
 
+        console.log(validationData);
+
         if(validationData.success){
 
             const { password, confirmPassword } = validationData.data;
+
+            console.log(password, confirmPassword);
 
             if(!password || !confirmPassword){
                 return res.status(400).json({
@@ -260,6 +264,8 @@ export const resetPassword = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
 
             const user = await Auth.findOne({ email });
+
+            console.log(user);
 
             if(!user){
                 return res.status(400).json({
