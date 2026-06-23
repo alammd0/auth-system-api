@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { AuthContext } from "../auth.context"
-import { changePassword, forgotPassword, loginUser, logoutUser, registerUser, resetPassword } from "../services/auth.api";
+import { changePassword, forgotPassword, getMe, loginUser, logoutUser, registerUser, resetPassword } from "../services/auth.api";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
@@ -60,6 +60,13 @@ export const useAuth = () => {
         try {
             const response = await logoutUser();
             setIsLoading(false);
+
+            if(response.status === 200){
+                setUser(null);
+                toast.success("Logout Successful");
+                navigate("/login")
+            }
+
             setUser(null);
         } catch (error) {
             console.log(error);

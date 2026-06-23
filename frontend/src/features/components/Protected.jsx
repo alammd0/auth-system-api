@@ -12,8 +12,8 @@ export default function Protected({ children }) {
         </main>;
     }
 
-    if (!user) {
-        <Navigate to="/login"/>;
+    if (!user && !isLoading) {
+        return <Navigate to="/login"/>;
     }
 
     return children;

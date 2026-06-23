@@ -1,33 +1,50 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AboutCard from "../components/profile/AboutCard";
+import ActionCard from "../components/profile/ActionCard";
+import ProfileHeader from "../components/profile/ProfileHeader";
+import ProfileInfo from "../components/profile/ProfileInfo";
 import { useAuth } from "../hooks/useAuth";
+
 
 export default function Profile() {
 
-    const [userInfo, setUserInfo] = useState(null);
+    // const [userInfo, setUserInfo] = useState(null);
 
-    const { getMeFn  } = useAuth();
+    // const { getMeFnd } = useAuth();
 
-    useEffect( () => {
-        const getUserInfo = async () => {
-            try {
-                const data = await getMeFn();
+    // const getUserInfo = async () => {
+    //     try {
+    //         const response = await getMeFnd();
 
-                setUserInfo(data.user);
-            }
-            catch(error){
-                console.log(error);
-            }
-        }
+    //         setUserInfo(response.data.data);
+    //     }
+    //     catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
-        getUserInfo();
-
-    }, [])
+    // useEffect(() => {
+    //     getUserInfo();
+    // }, []);
 
     console.log(userInfo);
 
-    return (
-        <div>
+    const { user } = useAuth();
 
+    return (
+        <div className="min-h-screen bg-slate-950 p-6">
+            <div className="max-w-6xl mx-auto space-y-6">
+
+                 {/* Profile Header */}
+                <ProfileHeader user={user} />
+
+                {/* Information Cards */}
+                <ProfileInfo user={user} />
+
+                {/* Action Buttons */}
+                <ActionCard />
+
+            </div>
         </div>
     )
 }
