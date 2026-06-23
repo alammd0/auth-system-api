@@ -11,7 +11,7 @@ const profileSchema = new mongoose.Schema({
     },
 
     phone : {
-
+        type : String
     },
 
     location : {
@@ -48,7 +48,10 @@ const authSchema = new mongoose.Schema({
         enum : ['User', 'Admin']
     },
 
-    profile : profileSchema,
+    profile: {
+        type: profileSchema,
+        default: {}
+    },
 
     otp : {
         type : String

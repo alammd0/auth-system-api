@@ -1,25 +1,17 @@
-
-import cloudinaryConfig from "../config/cloudinary.js";
-
-// create one function for upload image
+import cloudinary from "../config/cloudinary.js";
 
 export const uploadImage = async (file) => {
-
-    const options = {
-        file_name : file.originalname,
-        unique_filename : false,
-        overwrite: true,
-    }
-
     try {
-
-        const result = await cloudinaryConfig.uploader.upload(file.path, options);
-
-        console.log(result);
-
+        const result = await cloudinary.uploader.upload(
+            file.tempFilePath,
+            {
+                folder: "auth-system",
+                resource_type: "auto"
+            }
+        );
         return result;
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
+        throw new Error("Image upload failed");
     }
-}
+};

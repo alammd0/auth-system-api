@@ -95,8 +95,6 @@ export const loginUser = async (req, res) => {
                 })
             }
 
-            console.log(user);
-
             // Payload for JWT
             const payload = {
                 id : user._id,
@@ -108,8 +106,6 @@ export const loginUser = async (req, res) => {
             const token = jwt.sign(payload, process.env.JWT_SECRET, {
                 expiresIn : process.env.JWT_EXPIRES_IN
             });
-
-            console.log(token);
 
             res.cookie('token', token, {
                 httpOnly : true,
@@ -164,8 +160,6 @@ export const forgotPassword = async (req, res) => {
 
             const user = await Auth.findOne({ email });
 
-            // console.log(user);
-
             if (!user) {
                 return res.status(400).json({
                     message : "User not found"
@@ -184,17 +178,13 @@ export const forgotPassword = async (req, res) => {
                 expiresIn : process.env.JWT_EXPIRES_IN
             });
 
-            // console.log(token);
 
             const link = `${process.env.CLIENT_URL}/reset-password/${token}`;
-            // console.log(link);
 
             const message = `Click on the link to reset your password`;
 
             // send email 
             await sendEmailMessage(email, 'Reset Password', message, link);
-
-            // console.log(result);
 
             return res.status(200).json({
                 message : "Password Reset Link Send Successful"
@@ -232,19 +222,13 @@ export const resetPassword = async (req, res) => {
             })
         }
 
-        console.log(decoded);
-
         const { email } = decoded;
 
         const validationData = resetPasswordSchema.safeParse(req.body);
 
-        console.log(validationData);
-
         if(validationData.success){
 
             const { password, confirmPassword } = validationData.data;
-
-            console.log(password, confirmPassword);
 
             if(!password || !confirmPassword){
                 return res.status(400).json({
@@ -264,8 +248,6 @@ export const resetPassword = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
 
             const user = await Auth.findOne({ email });
-
-            console.log(user);
 
             if(!user){
                 return res.status(400).json({
@@ -393,52 +375,59 @@ export const getMe = async (req, res) => {
     }
 }
 
-// 8. Profile Update - H/W
+// 8. Profile Update 
 export const updateProfile = async (req, res) => {
     try {
         const { id } = req.user;
 
         const user = await Auth.findById(id);
 
-        if(!user){
+        if (!user) {
             return res.status(404).json({
-                message : "User not found"
-            })
+                message: "User not found"
+            });
         }
 
         const { bio, phone, location } = req.body;
 
-        const { image } = req.files;
+        const image = req.files?.image;
 
-        if(bio !== undefined){
-            user.bio = bio;
+        // Create profile object if missing
+        if (!user.profile) {
+            user.profile = {};
         }
 
-        if(phone !== undefined){
-            user.phone = phone;
+        if (bio !== undefined) {
+            user.profile.bio = bio;
         }
 
-        if(location !== undefined){
-            user.location = location;
+        if (phone !== undefined) {
+            user.profile.phone = phone;
         }
 
-        if(image !== undefined){
+        if (location !== undefined) {
+            user.profile.location = location;
+        }
+
+        if (image) {
             const imageUrl = await uploadImage(image);
-            user.image = imageUrl.url;
+
+            user.profile.image = imageUrl.url;
         }
 
         await user.save();
 
         return res.status(200).json({
-            message : "Profile Updated Successfully"
-        })
-    }
-    catch (error) {
+            message: "Profile Updated Successfully",
+            data: user
+        });
+
+    } catch (error) {
         return res.status(500).json({
-            message : "Internal Server Error",
-            error : error.message
-        })
+            message: "Internal Server Error",
+            error: error.message
+        });
     }
-}
+};
 
 // 9: TODO: Email Verification
