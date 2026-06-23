@@ -6,33 +6,34 @@ import { toast } from "react-toastify";
 
 
 export const useAuth = () => {
-    const { isLoading, user, setIsLoading, setUser } = useContext(AuthContext);
+    const context = useContext(AuthContext);
+
+    const { user, setUser, isLoading, setIsLoading } = context;
 
 
     const navigate = useNavigate();
 
     const registerFnd = async ({ name, email, password, role }) => {
         try {
-            setIsLoading(true);
-
-            console.log(name, email, password, role);
-
             const response = await registerUser({ name, email, password, role });
 
             if(response.status === 201){
                 navigate("/login");
+                isLoading(false)
             }
-
-            setIsLoading(false);
             setUser(response.data);
+
+            setIsLoading(false)
+
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 
     const loginFnd = async ({ email, password }) => {
         try {
-            setIsLoading(true);
+            
             const response = await loginUser({ email, password });
 
             if(!response){
@@ -42,7 +43,8 @@ export const useAuth = () => {
             }
 
             if(response.status === 200){
-                navigate("/profile");
+                navigate("/");
+                setIsLoading(false);
             }
 
             setIsLoading(false);
@@ -50,27 +52,29 @@ export const useAuth = () => {
         } catch (error) {
             console.log(error);
             toast.error(error.message);
+            setIsLoading(false);
         }
     }
 
     const logoutFnd = async () => {
         try {
-            setIsLoading(true);
             const response = await logoutUser();
             setIsLoading(false);
             setUser(null);
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 
     const forgotPasswordFnd = async ({ email }) => {
         try {
-            setIsLoading(true);
+
             const response = await forgotPassword({ email });
 
             if(response.status === 200){
                 toast.success("Password Reset Link Sent Successfully");
+                setIsLoading(false);
             }
 
             setIsLoading(false);
@@ -79,44 +83,49 @@ export const useAuth = () => {
             console.log(error);
             toast.error(error.message);
             toast.error("Something went wrong");
+            setIsLoading(false);
         }
     }
 
     const resetPasswordFnd = async ({ token, password, confirmPassword }) => {
         try {
-            setIsLoading(true);
             const response = await resetPassword({ token, password, confirmPassword });
 
             if(response.status === 200){
                 toast.success("Password Reset Successfully");
                 navigate("/login");
+                setIsLoading(false);
             }
 
             setIsLoading(false);
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 
     const changePasswordFnd = async ({ oldPassword, password, confirmPassword }) => {
         try {
-            setIsLoading(true);
+
             const response = await changePassword({ oldPassword, password, confirmPassword });
             setIsLoading(false);
             setUser(response.data);
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 
     const getMeFnd = async () => {
         try {
-            setIsLoading(true);
+
             const response = await getMe();
             setIsLoading(false);
             setUser(response.data);
+
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 
