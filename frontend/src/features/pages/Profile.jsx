@@ -27,9 +27,9 @@ export default function Profile() {
     //     getUserInfo();
     // }, []);
 
-    console.log(userInfo);
-
     const { user } = useAuth();
+
+    
 
     return (
         <div className="min-h-screen bg-slate-950 p-6">

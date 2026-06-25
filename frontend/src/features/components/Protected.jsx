@@ -6,6 +6,8 @@ export default function Protected({ children }) {
 
     const { isLoading, user } = useAuth();
 
+    console.log(user);
+
     if (isLoading) {
         return <main>
             <div>Loading...</div>

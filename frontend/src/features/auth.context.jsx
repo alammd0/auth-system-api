@@ -6,14 +6,17 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect( () => {
         const getandSetUser = async () => {
             try {
                 const data = await getMe();
-                
+
+                console.log(data.data.data);
+
                 setUser(data.data.data);
+
                 setIsLoading(false);
             }
             catch(error){

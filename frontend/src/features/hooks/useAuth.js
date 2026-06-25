@@ -21,7 +21,8 @@ export const useAuth = () => {
                 navigate("/login");
                 isLoading(false)
             }
-            setUser(response.data);
+            
+            setUser(response.data.data);
 
             setIsLoading(false)
 
@@ -47,8 +48,10 @@ export const useAuth = () => {
                 setIsLoading(false);
             }
 
+            setUser(response.data.data);
+
             setIsLoading(false);
-            setUser(response.data);
+
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -128,7 +131,7 @@ export const useAuth = () => {
 
             const response = await getMe();
             setIsLoading(false);
-            setUser(response.data);
+            setUser(response.data.data);
 
         } catch (error) {
             console.log(error);
