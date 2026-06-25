@@ -6,14 +6,16 @@ export default function Protected({ children }) {
 
     const { isLoading, user } = useAuth();
 
+    console.log(user);
+
     if (isLoading) {
         return <main>
             <div>Loading...</div>
         </main>;
     }
 
-    if (!user) {
-        <Navigate to="/login"/>;
+    if (!user && !isLoading) {
+        return <Navigate to="/login"/>;
     }
 
     return children;

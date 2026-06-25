@@ -47,7 +47,7 @@ export const logoutUser = async () => {
 
         console.log(response);
 
-        return response.data;
+        return response;
     }
     catch (error) {
         console.log(error);
@@ -107,18 +107,12 @@ export const changePassword = async ({ oldPassword, password, confirmPassword })
 
 export const getMe = async () => {
     try {
-        const response = await instance.get("/auth/me");
+        const response = await instance.get("/auth/me"); 
 
-        console.log(response);  
-
-        return response.data;
+        return response;
     }
     catch (error) {
-        console.log(error);
-
-        if (error.response.status === 401) {
-            window.location.href = "/login";
-        }
+        console.error(error);
     }
 }
 

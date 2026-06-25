@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { AuthContext } from "../auth.context"
-import { changePassword, forgotPassword, loginUser, logoutUser, registerUser, resetPassword } from "../services/auth.api";
+import { changePassword, forgotPassword, getMe, loginUser, logoutUser, registerUser, resetPassword } from "../services/auth.api";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
@@ -21,7 +21,8 @@ export const useAuth = () => {
                 navigate("/login");
                 isLoading(false)
             }
-            setUser(response.data);
+            
+            setUser(response.data.data);
 
             setIsLoading(false)
 
@@ -47,8 +48,10 @@ export const useAuth = () => {
                 setIsLoading(false);
             }
 
+            setUser(response.data.data);
+
             setIsLoading(false);
-            setUser(response.data);
+
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -60,6 +63,13 @@ export const useAuth = () => {
         try {
             const response = await logoutUser();
             setIsLoading(false);
+
+            if(response.status === 200){
+                setUser(null);
+                toast.success("Logout Successful");
+                navigate("/login")
+            }
+
             setUser(null);
         } catch (error) {
             console.log(error);
@@ -121,7 +131,7 @@ export const useAuth = () => {
 
             const response = await getMe();
             setIsLoading(false);
-            setUser(response.data);
+            setUser(response.data.data);
 
         } catch (error) {
             console.log(error);

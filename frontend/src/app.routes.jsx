@@ -15,6 +15,13 @@ const routes = createBrowserRouter([
         </Protected>
     },
 
+    // {
+    //     path : "/card",
+    //     element : <Protected>
+    //         <Card />
+    //     </Protected>
+    // }
+
     {
         path : "/register",
         element : <Register />
