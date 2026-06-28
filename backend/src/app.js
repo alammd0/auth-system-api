@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.use(cors(
     {
-        origin: "https://auth-system-api-livid.vercel.app/",
+        origin: "https://auth-system-api-livid.vercel.app",
         credentials: true
     }
 ));
