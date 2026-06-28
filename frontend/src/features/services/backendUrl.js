@@ -1,2 +1,2 @@
 
-export const backendUrl = "http://localhost:3000/api";
+export const backendUrl = "https://auth-system-api-1-z22h.onrender.com/api";
